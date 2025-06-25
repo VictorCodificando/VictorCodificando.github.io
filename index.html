@@ -1,12 +1,202 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Mi Página Web</title>
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VictorCodificando Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Smooth scrolling for anchor links */
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: 'Inter', sans-serif; /* A nice default sans-serif font */
+        background-color: #0f172a; /* slate-900 (Tailwind class bg-slate-900) - This is the base for the canvas */
+        margin: 0; /* Ensure no default margin */
+        overflow-x: hidden; /* Prevent horizontal scroll from subtle overflows */
+      }
+      /* Custom scrollbar for a more modern look (optional) */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b; /* slate-800 */
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #38bdf8; /* cyan-400 */
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #0ea5e9; /* cyan-500 */
+      }
+
+      #particle-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; /* Behind other content */
+      }
+
+      #root {
+        position: relative; /* Establishes a stacking context */
+        z-index: 1;         /* Ensures it's above the canvas */
+      }
+    </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              orbitron: ['Orbitron', 'sans-serif'],
+            },
+            animation: {
+              'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+              'fade-in': 'fadeIn 0.8s ease-out forwards',
+              'pulse-glow': 'pulseGlow 2s infinite ease-in-out',
+            },
+            keyframes: {
+              fadeInUp: {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              pulseGlow: {
+                '0%, 100%': { boxShadow: '0 0 5px #0ea5e9, 0 0 10px #0ea5e9' },
+                '50%': { boxShadow: '0 0 15px #0ea5e9, 0 0 25px #0ea5e9' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+<link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-CxWdmGev.js"></script>
 </head>
-<body>
-    <h1>¡Hola, Mundo!</h1>
-    <p>Bienvenido a mi sitio web alojado en GitHub Pages.</p>
-</body>
+  <body class="text-slate-200"> <!-- Removed bg-slate-900 from here, set in CSS for body tag -->
+    <canvas id="particle-canvas"></canvas>
+    <div id="root"></div>
+    <script>
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let particlesArray;
+
+      function setCanvasSize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      setCanvasSize();
+
+      class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+          this.x = x;
+          this.y = y;
+          this.directionX = directionX;
+          this.directionY = directionY;
+          this.size = size; // radius
+          this.color = color;
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+        }
+
+        update() {
+          // Wall collision
+          if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+            this.directionX = -this.directionX;
+          }
+          if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+            this.directionY = -this.directionY;
+          }
+          // Move particle
+          this.x += this.directionX;
+          this.y += this.directionY;
+          this.draw();
+        }
+      }
+
+      function init() {
+        particlesArray = [];
+        const numberOfParticles = (canvas.height * canvas.width) / 10000; // Adjust density
+        for (let i = 0; i < numberOfParticles; i++) {
+          const size = Math.random() * 1.5 + 0.5; // Particle radius: 0.5px to 2px
+          const x = Math.random() * (canvas.width - size * 2) + size;
+          const y = Math.random() * (canvas.height - size * 2) + size;
+          // Slower movement, range: -0.2 to 0.2
+          const directionX = (Math.random() * 0.4) - 0.2; 
+          const directionY = (Math.random() * 0.4) - 0.2;
+          const color = 'rgba(56, 189, 248, 0.6)'; // Tailwind sky-400 (equiv.) with 60% opacity
+
+          particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < particlesArray.length; i++) {
+          particlesArray[i].update();
+        }
+        connect();
+      }
+
+      function connect() {
+        const maxDistance = 110; // Max distance to connect particles
+        for (let a = 0; a < particlesArray.length; a++) {
+          for (let b = a + 1; b < particlesArray.length; b++) {
+            const dx = particlesArray[a].x - particlesArray[b].x;
+            const dy = particlesArray[a].y - particlesArray[b].y;
+            const distanceSquared = dx * dx + dy * dy;
+            
+            if (distanceSquared < maxDistance * maxDistance) {
+              const distance = Math.sqrt(distanceSquared);
+              // Opacity decreases as distance increases. Max opacity for lines is 0.2
+              const opacity = (1 - (distance / maxDistance)) * 0.2; 
+              
+              if (opacity > 0) { // Only draw if opacity is positive
+                ctx.strokeStyle = `rgba(56, 189, 248, ${opacity})`; // sky-400 base for lines
+                ctx.lineWidth = 0.7; // Line width
+                ctx.beginPath();
+                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                ctx.stroke();
+              }
+            }
+          }
+        }
+      }
+
+      window.addEventListener('resize', () => {
+        setCanvasSize();
+        init(); 
+      });
+
+      init();
+      animate();
+    </script>
+  </body>
 </html>
