@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0f172a; /* slate-900 */
+    margin: 0;
+    overflow-x: hidden;
+  }
+
+  /* Scroll suave salvo que el usuario prefiera menos movimiento */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Scrollbar personalizada */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1e293b; /* slate-800 */
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #38bdf8; /* cyan-400 */
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #0ea5e9; /* cyan-500 */
+  }
+
+  /* Compensa la navbar fija al saltar a anclas */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+}

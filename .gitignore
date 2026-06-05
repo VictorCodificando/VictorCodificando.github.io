@@ -1,0 +1,19 @@
+# Dependencias y build
+node_modules/
+dist/
+*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# PDFs sueltos en la raíz (CV.pdf, Linkedin_Profile.pdf) — datos privados
+/*.pdf
+# ...pero SÍ publicamos el CV servido por el sitio
+!public/CV.pdf
+
+# Editor / SO
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
