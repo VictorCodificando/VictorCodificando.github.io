@@ -26,4 +26,4 @@ export const profile = {
 
 // Servicio de formulario de contacto (estático, sin backend).
 // Sustituye este endpoint por el tuyo de Formspree: https://formspree.io/f/XXXXXXXX
-export const FORMSPREE_ENDPOINT = 'https://formspree.io/f/REEMPLAZA_ESTE_ID';
+export const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mjgdgygj';
