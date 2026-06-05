@@ -13,8 +13,8 @@ export const featuredProjects: FeaturedProject[] = [
   {
     name: 'AutoSub-AI',
     description:
-      'Generador de subtítulos automáticos a partir de un archivo de vídeo en cualquier idioma, usando modelos de IA de reconocimiento de voz (ASR). Transcribe, segmenta y sincroniza el texto para producir archivos de subtítulos listos para usar.',
-    tech: ['Python', 'Deep Learning', 'Speech-to-Text', 'IA Generativa'],
+      'Generador de subtítulos automáticos a partir de un archivo de vídeo a cualquier idioma. Traducción avanzada de subtitulos.',
+    tech: ['Python', 'Deep Learning', 'Speech-to-Text', 'IA Generativa', 'LLMs'],
     repoUrl: 'https://github.com/VictorCodificando/AutoSub-AI',
     featured: true,
   },
