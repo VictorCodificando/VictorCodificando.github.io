@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { profile, FORMSPREE_ENDPOINT } from '../data/profile';
 import SectionHeading from './SectionHeading';
+import Reveal from './Reveal';
 import { GitHubIcon, LinkedInIcon, MailIcon, CopyIcon } from './icons';
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
@@ -49,7 +50,7 @@ export default function Contact() {
         />
 
         {/* Atajos de contacto */}
-        <div className="mb-10 flex flex-wrap items-center justify-center gap-4">
+        <Reveal className="mb-10 flex flex-wrap items-center justify-center gap-4" delay={100}>
           <button
             type="button"
             onClick={copyEmail}
@@ -81,10 +82,11 @@ export default function Contact() {
           >
             <GitHubIcon className="h-4 w-4" /> GitHub
           </a>
-        </div>
+        </Reveal>
 
         {/* Formulario (Formspree, sin backend) */}
-        <form onSubmit={onSubmit} className="space-y-4">
+        <Reveal delay={200}>
+        <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-6 backdrop-blur sm:p-8">
           {/* Honeypot anti-spam */}
           <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" className="hidden" />
 
@@ -98,7 +100,7 @@ export default function Contact() {
                 name="name"
                 type="text"
                 required
-                className="w-full rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2.5 text-slate-100 outline-none transition-colors focus:border-brand"
+                className="w-full rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2.5 text-slate-100 outline-none transition-all focus:border-brand focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]"
               />
             </div>
             <div>
@@ -110,7 +112,7 @@ export default function Contact() {
                 name="email"
                 type="email"
                 required
-                className="w-full rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2.5 text-slate-100 outline-none transition-colors focus:border-brand"
+                className="w-full rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2.5 text-slate-100 outline-none transition-all focus:border-brand focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]"
               />
             </div>
           </div>
@@ -124,14 +126,14 @@ export default function Contact() {
               name="message"
               rows={5}
               required
-              className="w-full rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2.5 text-slate-100 outline-none transition-colors focus:border-brand"
+              className="w-full rounded-md border border-slate-700 bg-slate-900/60 px-4 py-2.5 text-slate-100 outline-none transition-all focus:border-brand focus:shadow-[0_0_0_3px_rgba(56,189,248,0.15)]"
             />
           </div>
 
           <button
             type="submit"
             disabled={status === 'sending'}
-            className="w-full rounded-md bg-brand px-6 py-3 font-medium text-slate-900 transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn-shine w-full rounded-md bg-brand px-6 py-3 font-medium text-slate-900 transition-all hover:bg-brand-dark hover:shadow-[0_0_25px_rgba(56,189,248,0.35)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {status === 'sending' ? 'Enviando…' : 'Enviar mensaje'}
           </button>
@@ -147,6 +149,7 @@ export default function Contact() {
             </p>
           )}
         </form>
+        </Reveal>
       </div>
     </section>
   );

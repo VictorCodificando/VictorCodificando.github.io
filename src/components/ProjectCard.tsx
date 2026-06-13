@@ -17,7 +17,7 @@ export default function ProjectCard({ repo }: { repo: GitHubRepo }) {
   const demo = repo.homepage && repo.homepage.startsWith('http') ? repo.homepage : null;
 
   return (
-    <article className="flex flex-col rounded-xl border border-slate-800 bg-slate-900/50 p-6 transition-all hover:-translate-y-1 hover:border-brand/50">
+    <article className="flex h-full flex-col rounded-xl border border-slate-800 bg-slate-900/50 p-6 transition-colors hover:border-brand/50">
       <div className="mb-3 flex items-start justify-between gap-2">
         <h3 className="font-semibold text-white">{repo.name}</h3>
         <div className="flex items-center gap-3 text-xs text-slate-400">

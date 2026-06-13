@@ -13,12 +13,37 @@ const links = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [active, setActive] = useState('');
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(window.scrollY / max, 1) : 0);
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Scroll-spy: resalta el enlace de la sección visible
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(`#${entry.target.id}`);
+        }
+      },
+      { rootMargin: '-40% 0px -55% 0px' },
+    );
+    for (const { href } of links) {
+      const el = document.getElementById(href.slice(1));
+      if (el) observer.observe(el);
+    }
+    const inicio = document.getElementById('inicio');
+    if (inicio) observer.observe(inicio);
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -37,7 +62,9 @@ export default function Navbar() {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="text-sm text-slate-300 transition-colors hover:text-brand"
+                className={`nav-link text-sm transition-colors hover:text-brand ${
+                  active === l.href ? 'active text-brand' : 'text-slate-300'
+                }`}
               >
                 {l.label}
               </a>
@@ -47,7 +74,7 @@ export default function Navbar() {
             <a
               href={profile.cvUrl}
               download
-              className="rounded-md border border-brand px-4 py-1.5 text-sm font-medium text-brand transition-colors hover:bg-brand hover:text-slate-900"
+              className="rounded-md border border-brand px-4 py-1.5 text-sm font-medium text-brand transition-all hover:bg-brand hover:text-slate-900 hover:shadow-[0_0_18px_rgba(56,189,248,0.45)]"
             >
               CV
             </a>
@@ -65,14 +92,23 @@ export default function Navbar() {
         </button>
       </nav>
 
+      {/* Barra de progreso de lectura */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-brand to-indigo-400 transition-[width] duration-150 ease-out"
+        style={{ width: `${progress * 100}%` }}
+      />
+
       {open && (
-        <ul className="flex flex-col gap-1 border-t border-slate-800 bg-slate-900/95 px-6 py-4 md:hidden">
+        <ul className="flex flex-col gap-1 border-t border-slate-800 bg-slate-900/95 px-6 py-4 backdrop-blur md:hidden">
           {links.map((l) => (
             <li key={l.href}>
               <a
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="block py-2 text-slate-300 transition-colors hover:text-brand"
+                className={`block py-2 transition-colors hover:text-brand ${
+                  active === l.href ? 'text-brand' : 'text-slate-300'
+                }`}
               >
                 {l.label}
               </a>

@@ -3,44 +3,65 @@ import { featuredProjects } from '../data/projects';
 import { useGitHubRepos } from '../hooks/useGitHubRepos';
 import SectionHeading from './SectionHeading';
 import ProjectCard from './ProjectCard';
+import Reveal from './Reveal';
+import TiltCard from './TiltCard';
 import { GitHubIcon, ExternalIcon } from './icons';
 
 function FeaturedProjectCard() {
   const p = featuredProjects[0];
   if (!p) return null;
   return (
-    <div className="mb-12 overflow-hidden rounded-2xl border border-brand/40 bg-gradient-to-br from-slate-900 to-slate-800/60 p-8 shadow-[0_0_30px_rgba(56,189,248,0.1)]">
-      <span className="mb-3 inline-block rounded-full bg-brand/10 px-3 py-1 text-xs font-medium uppercase tracking-wide text-brand">
-        Proyecto destacado
-      </span>
-      <h3 className="mb-3 font-orbitron text-2xl text-white">{p.name}</h3>
-      <p className="mb-5 max-w-2xl text-slate-300">{p.description}</p>
-      <ul className="mb-6 flex flex-wrap gap-2">
-        {p.tech.map((t) => (
-          <li key={t} className="rounded-md bg-slate-800 px-3 py-1 text-sm text-slate-200">
-            {t}
-          </li>
-        ))}
-      </ul>
-      <div className="flex flex-wrap gap-4">
-        <a
-          href={p.repoUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-md bg-brand px-5 py-2.5 font-medium text-slate-900 transition-colors hover:bg-brand-dark"
-        >
-          <GitHubIcon className="h-5 w-5" /> Ver código
-        </a>
-        {p.demoUrl && (
-          <a
-            href={p.demoUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-md border border-slate-600 px-5 py-2.5 font-medium text-slate-200 transition-colors hover:border-brand hover:text-brand"
-          >
-            <ExternalIcon className="h-5 w-5" /> Demo
-          </a>
-        )}
+    <Reveal className="mb-12" direction="scale">
+      <TiltCard className="rounded-2xl" maxTilt={3}>
+        <div className="overflow-hidden rounded-2xl border border-brand/40 bg-gradient-to-br from-slate-900 to-slate-800/60 p-8 shadow-[0_0_30px_rgba(56,189,248,0.1)]">
+          <span className="mb-3 inline-block rounded-full bg-brand/10 px-3 py-1 text-xs font-medium uppercase tracking-wide text-brand">
+            Proyecto destacado
+          </span>
+          <h3 className="mb-3 font-orbitron text-2xl text-white">{p.name}</h3>
+          <p className="mb-5 max-w-2xl text-slate-300">{p.description}</p>
+          <ul className="mb-6 flex flex-wrap gap-2">
+            {p.tech.map((t) => (
+              <li key={t} className="rounded-md bg-slate-800 px-3 py-1 text-sm text-slate-200">
+                {t}
+              </li>
+            ))}
+          </ul>
+          <div className="flex flex-wrap gap-4">
+            <a
+              href={p.repoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-shine inline-flex items-center gap-2 rounded-md bg-brand px-5 py-2.5 font-medium text-slate-900 transition-colors hover:bg-brand-dark"
+            >
+              <GitHubIcon className="h-5 w-5" /> Ver código
+            </a>
+            {p.demoUrl && (
+              <a
+                href={p.demoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-md border border-slate-600 px-5 py-2.5 font-medium text-slate-200 transition-colors hover:border-brand hover:text-brand"
+              >
+                <ExternalIcon className="h-5 w-5" /> Demo
+              </a>
+            )}
+          </div>
+        </div>
+      </TiltCard>
+    </Reveal>
+  );
+}
+
+/** Esqueleto de carga con la misma silueta que una ProjectCard. */
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+      <div className="mb-4 h-4 w-2/3 rounded bg-slate-800" />
+      <div className="mb-2 h-3 w-full rounded bg-slate-800/80" />
+      <div className="mb-6 h-3 w-4/5 rounded bg-slate-800/80" />
+      <div className="flex items-center justify-between">
+        <div className="h-3 w-16 rounded bg-slate-800/80" />
+        <div className="h-5 w-12 rounded bg-slate-800/80" />
       </div>
     </div>
   );
@@ -62,7 +83,11 @@ export default function Projects() {
         <FeaturedProjectCard />
 
         {loading && (
-          <p className="text-center text-slate-400">Cargando proyectos…</p>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }, (_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
         )}
 
         {error && !loading && (
@@ -73,13 +98,17 @@ export default function Projects() {
 
         {!loading && !error && (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {otherRepos.map((repo) => (
-              <ProjectCard key={repo.id} repo={repo} />
+            {otherRepos.map((repo, i) => (
+              <Reveal key={repo.id} delay={(i % 3) * 110} className="h-full">
+                <TiltCard className="h-full rounded-xl">
+                  <ProjectCard repo={repo} />
+                </TiltCard>
+              </Reveal>
             ))}
           </div>
         )}
 
-        <div className="mt-12 text-center">
+        <Reveal className="mt-12 text-center">
           <a
             href={profile.social.github}
             target="_blank"
@@ -88,7 +117,7 @@ export default function Projects() {
           >
             <GitHubIcon className="h-5 w-5" /> Ver todo en GitHub
           </a>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
